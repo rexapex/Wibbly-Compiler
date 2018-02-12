@@ -14,7 +14,7 @@ def genTokenStream(text):
     p = re.compile(captureComment + '|' + captureKeyword + '|' + captureNumber + '|' + captureIdentifier + '|' + captureString + '|' + captureBinaryOperator + '|' + captureUnaryOperator + '|' + captureDelimiters)
     iterator = p.finditer(text)
 
-    tokenTypes = [None, 'LINE_COMMENT', 'KEYWORD', 'NUMBER', 'IDENTIFIER', 'STRING', 'BIN_OP', 'UN_OP', 'DELIM']
+    tokenTypes = [None, 'LINE_COMMENT', 'KEYWORD', 'NUMBER_LIT', 'IDENTIFIER', 'STRING_LIT', 'BIN_OP', 'UN_OP', 'DELIM']
     tokens = []
 
     for match in iterator:
@@ -26,7 +26,7 @@ def genTokenStream(text):
 
     tokens.sort(key=lambda x: x[1])
 
-    for tok in tokens:
-        print(tokenTypes[tok[0]] + ':       ' + tok[2])
+    #for tok in tokens:
+    #    print(tokenTypes[tok[0]] + ':       ' + tok[2])
 
     return tokens, tokenTypes
