@@ -1,0 +1,65 @@
+scopeName: 'source.wibbly'
+name: 'Wibbly Syntax Highlighter'
+fileTypes: [ 'wbly' ]
+limitLineLength: false
+patterns: [
+	{
+		comment: 'A keyword'
+		name: 'keyword.control.wibbly'
+		match: '\\b(if|else|then|while|for|in|break|continue|return|do|end|wibbly|wobbly)\\b'
+	}
+	{
+		comment: 'A built-in constant'
+		name: 'constant.language.wibbly'
+		match: '\\b(true|false|empty)\\b'
+	}
+	{
+		comment: 'A built-in function'
+		name: 'entity.name.function.wibbly'
+		match: '\\b(open|close|print|println)\\b'
+	}
+	{
+		comment: 'A storage related keyword'
+		name: 'storage.type.wibbly'
+		match: '\\b(class|get|set|int|big|float|string|bool|func)\\b'
+	}
+	{
+		comment: 'A number constant'
+		name: 'constant.numeric.wibbly'
+		match: '\\b[0-9]+(.[0-9]+)?\\b'
+	}
+	{
+		comment: 'The name of a variable'
+		name: 'variable.parameter.wibbly'
+		match: '\\b[a-zA-Z_][a-zA-Z_0-9]*\\b'
+	}
+	{
+		comment: 'A comment line'
+		name: 'comment.line.wibbly'
+		match: '//.*$'
+	}
+	{
+		comment: 'Double quoted strings'
+		name: 'string.quoted.double.wibbly'
+		begin: '"'
+		end: '"'
+		patterns: [
+			{
+			name: 'constant.character.escape.wibbly'
+			match: '\\.'
+			}
+		]
+	}
+	{
+		comment: 'Single quoted strings'
+		name: 'string.quoted.single.wibbly'
+		begin: '\''
+		end: '\''
+		patterns: [
+			{
+			name: 'constant.character.escape.wibbly'
+			match: '\\.'
+			}
+		]
+	}
+]

@@ -1,0 +1,135 @@
+struct = {
+	a = 6
+	b = 'ack'
+	
+	// variable containing executable code
+	do = () -> {
+		println(a, b)
+	}
+	
+	// variable containing executable code
+	'do something' = () -> {
+		println(a, b)
+	}
+	
+	// also a variable
+	me.do = () -> {
+		// me.a === a
+	}
+	
+	// method belonging to structure
+	struct.'foo bar ack' = () -> {
+		
+	}
+	
+	struct.{i} = (i) -> {
+		
+	}
+}
+
+b = (foo, bar, ack) -> {
+	
+}
+
+main = (args) -> {
+	obj1 = struct {}
+	obj2 = struct {a:7}
+	obj3 = struct {a:7, b:'donkey'}
+	
+	obj1.do()
+	obj1.'do something'()
+	obj1.'foo bar ack'()
+	
+	
+	
+	// if statement
+	a = 0
+	
+	[a == 1].then -> {
+		// if statement
+	}
+	.else [a == 2].then -> {
+		// else if statement
+	}
+	.else -> {
+		// else statement
+	}
+	
+	
+	
+	// test statement
+	[a].test -> {
+		[0].then -> {
+			
+		}
+		[1].then -> {
+			
+		}
+		[2].then -> {
+			
+		}
+		[].then -> {
+			// default case
+		}
+	}
+	
+	
+	
+	// loop statements
+	lst1 = list {}
+	lst2 = list {1, 2, 3, 'foo'}
+	
+	[lst2].do -> {
+		// loop through elements in lst2
+	}
+	
+	[i=0,10,1].do -> {
+		// loop from 0 (inclusive) to 10 (exclusive)
+	}
+	
+	[true].do -> {
+		// infinite loop
+	}
+	
+	
+	
+	// emptiness
+	// no null value, only empty objects/functions/variables
+	r = a.c
+	[r == empty].then -> {
+		// r is empty since a.c doesn't exist
+	}
+	
+	// calling method / getting variable from empty returns empty
+	c = r.a()				// c = empty
+	empty.'do something'()	// nothing happens
+	
+	
+	
+	// exception/errors
+	// can insert .catch anywhere to catch exceptions
+	[lst1 {1} == 1].then -> {
+		
+	}
+	.catch(e) -> {
+		// no element 1 so exception thrown
+	}
+	
+	// or
+	lst1 {1}.catch -> {
+		
+	}
+	
+	// ack
+	println(lst1 {1}).catch -> {
+		println('lst length < 2')
+	}
+}
+
+
+
+
+
+
+
+

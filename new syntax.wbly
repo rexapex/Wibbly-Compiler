@@ -1,0 +1,120 @@
+"""Copyright © James Sugden 2018"""
+
+// what a class
+class Animal(b) do
+	// all member variables are private
+	me.x = 0
+	me.y = 1
+	get me.b = b
+
+	// member variable getters and setters
+	get set me.c = "hi"
+
+	// all member functions are public
+	func makenoise() do
+		println("meow!")
+	end func
+end class
+
+class Dog(b) do
+	get me.Animal = Animal(b)	// variable named same as class is basically inheritance
+end class
+
+// loop statement
+for i = 0, i <= 4, i++  do
+	println(i)
+end for
+
+for i in list do
+	println(i)
+end for
+
+while true do
+	println("hi there!")
+end while
+
+// a-synchronous function
+wibbly func foo() do
+	println("hi!")
+end func
+
+// synchronous function
+func ack() do
+	println("hello world!")
+end func
+
+func example() do
+	// creating and accessing an object
+	cat = Animal(10)
+	get cat.c			// returns "hi"
+	get cat.x			// error
+	set cat.c = "bye"	// sets cat.c from "hi" to "bye"
+	set cat.x = 4		// error
+	cat.makenoise()		// prints "meow!"
+
+
+
+	// lists are NOT fixed type or size
+	l = [cat, Dog(5)]
+
+	for a in l do			// prints 10 then empty
+		println(a.b)
+	end for
+
+	for a: Animal in l do	// prints 10
+		println(get a.b)
+	end for
+
+	for get a.Animal in l do	// prints 10 then 5, get classObject.ClassName always return classObject if classObject: ClassName
+		println(get a.b)
+	end for
+
+	for a: Dog in l do
+		println(get a.b)		// prints 5
+	end for
+
+
+
+	// control flow
+	if get cat.b == 10 then
+		println("cat is 10")
+	else if get cat.b == 5 then
+		println("cat is 5")
+	else
+		println("who knows!??!?")
+	end if
+
+
+
+	// emptiness
+	// empty == empty
+	// empty.x == empty
+	// empty.x() == empty
+
+
+
+	// synchronising variables, if waits until cat and cat.b are free
+	if wobbly get cat.b == 10 then
+		println("cool")
+	end if
+
+
+
+	// a-synchronous loop
+	wibbly for get a.Animal in l do
+		println(get a.b)	// prints 10 and 5 in undefined order
+	end for
+
+
+
+	// a-synchronous loop which only runs once list is not in use
+	wibbly for wobbly get a.Animal in l do
+		println(get a.b)	// prints 10 and 5 in undefine order as soon as l and a and a.Animal are free
+	end for
+end func
+
+func main() do
+	a = 3
+	b: int = 4
+	c: big int = 5
+end func
