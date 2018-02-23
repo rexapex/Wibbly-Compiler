@@ -1,8 +1,20 @@
-"""Copyright © James Sugden 2018"""
+"""Lexical analyser of the Wibbly language compiler"""
+"""Visit our webstite at www.origamisheep.com"""
+
 import re
 
+__author__ = "James Sugden"
+__copyright__ = "Copyright © James Sugden 2018"
+__version__ = "0.0.1"
+
+class Token:
+    def __init__(self, tokenType, text, startIndex):
+        self.type = tokenType
+        self.text = text
+        self.startIndex = startIndex
+
 def genTokenStream(text):
-    captureKeyword = '(\\b(?:if|else|then|while|for|in|break|continue|return|do|end|wibbly|wobbly|true|false|empty|open|close|print|println|class|get|set|int|big|float|string|bool|func|me)\\b)'
+    captureKeyword = '(\\b(?:if|else|then|while|for|in|break|continue|return|do|end|wibbly|wobbly|true|false|empty|class|module|get|set|int|big|float|string|bool|func|me|import)\\b)'
     captureNumber = '(\\b[0-9]+(?:.[0-9]+)?\\b)'
     captureComment = '(\\/\\/.*)'
     captureIdentifier = '(\\b[a-zA-Z_][a-zA-Z_0-9]*\\b)'
@@ -21,12 +33,13 @@ def genTokenStream(text):
         # first group matches the whole text
         for i in range(1, p.groups + 1):
             if not match.group(i) is None:
-                tokens.append([i, match.start(), match.group()])
+                tokens.append(Token(tokenTypes[i], match.group(), match.start()))
+                #tokens.append([i, match.start(), match.group()])
                 break
 
-    tokens.sort(key=lambda x: x[1])
+    tokens.sort(key=lambda x: x.startIndex)
 
-    #for tok in tokens:
-    #    print(tokenTypes[tok[0]] + ':       ' + tok[2])
+    for tok in tokens:
+        print(tok.type + ':       ' + tok.text)
 
     return tokens, tokenTypes
