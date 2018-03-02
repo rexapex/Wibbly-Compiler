@@ -1,5 +1,12 @@
 """Copyright © James Sugden 2018"""
 
+// wibbly funtions, wobbly types and void values
+
+///
+	multi-line comments are enclosed between 2 sets of 3 forward slashes
+	see, still in the comment!
+///
+
 // what a class
 class Animal(b) do
 	// all member variables are private
@@ -10,9 +17,38 @@ class Animal(b) do
 	// member variable getters and setters
 	get set me.c = "hi"
 
-	// all member functions are public
+	// customised getters and setters using anonymous functions
+	me.p = 0
+	get me.p = func() do
+		return m.p as string		// explicit casting, int to string, allows get to return a different type
+	end func
+	set me.p = func(x) do
+		me.p = x.p					// pass a holder object and set p to a member of holder object
+	end func
+
+	// all member functions are visible to all classes by default
 	func makenoise() do
 		println("meow!")
+	end func
+
+	// member functions can be hidden from other classes
+	hide func makenoise2() do		// this func can only be called from within Animal class
+		println("meow!")
+	end func
+
+	// hiding member function in other classes (similar to friend classes in C++)
+	hide in Animal, Dog func makenoise3() do	// this func is visible to Animal and Dog classes, note, a func can be hidden from it's own class
+		println("meow!")
+	end func
+
+	// all parameter are optional
+	func bar(foo, ack: int) do
+		println(foo, ack)
+	end func
+
+	func callfoo() do
+		foo()			// prints: void, 0
+		foo(true, 1)	// prints: true, 1
 	end func
 end class
 
@@ -20,101 +56,313 @@ class Dog(b) do
 	get me.Animal = Animal(b)	// variable named same as class is basically inheritance
 end class
 
-// loop statement
-for i = 0, i <= 4, i++  do
-	println(i)
-end for
+class Main() do
 
-for i in list do
-	println(i)
-end for
+	func returnexample(ack: bool) do
+		if ack do
+			return 0, 1
+		else do
+			return 0, 1 with InvalidArgumentException()
+		end if
+	end func
 
-while true do
-	println("hi there!")
-end while
+	func execexample() do
+		// call return example and ignore exceptions
+		a = returnexample(false)
+		a = returnexample(1)		// implicit cast of 1 to bool -> true
+		a = returnexample("false")	// implicit cast of "false" to bool -> false
+		a = returnexample("oops")	// cast to bool gives void
 
-// a-synchronous function
-wibbly func foo() do
-	println("hi!")
-end func
+		// call return example and catch exceptions
+		a = returnexample(false) catch e do
+			println(e)
+		end catch
+	end func
 
-// synchronous function
-func ack() do
-	println("hello world!")
-end func
+	// casting a truthiness
+	func castexample() do
+		// all casts are done implicitly
+		a = "10101"		// a is a string, "10101"
+		b = a			// b is a string, "10101"
+		c: int = a		// a is an integer, 10101
+		d: int = "foo"	// d is an integer, void
+		e = d			// e is an integer, void
+		f: string = d	// f is a string, void
 
-func example() do
-	// creating and accessing an object
-	cat = Animal(10)
-	get cat.c			// returns "hi"
-	get cat.x			// error
-	set cat.c = "bye"	// sets cat.c from "hi" to "bye"
-	set cat.x = 4		// error
-	cat.makenoise()		// prints "meow!"
+		// explicit casting (can be used when parameter type is not given or when returning from function)
+		g = a as int		// g is an integer, 10101
+		h = c as string		// h is a string, "10101"
+		j = "foo" as int	// j is an integer, void
 
+		// falsiness
+		// false, 0, 0.0, "", '', void are all evaluated to false
+		// any other value is evaluated to true
+		a == true	// true
+		b == true	// true
+		c == true	// true
+		d == true	// false
+		e == true	// false
+		f == true	// false
 
+		// == operator evaluates true if both sides are void
+		// otherwise, == evaluates true iff both sides have same type and value
+		// ~== evaluates true if both sides evaluates to true when cast to string
+		a == b		// true
+		a == c		// false
+		a ~== c		// true
 
-	// lists are NOT fixed type or size
-	l = [cat, Dog(5)]
+		// max int value = 2,147,483,647
+		// min int value = -2,147,483,648
+		// adding to max/subtracting from min over/under flows giving an integer value with a OverFlowException or UnderFlowException
+		// e.g.
+		i = 2,147,483,647
+		i ++
+		println(i)									// prints -2,147,483,648
 
-	for a in l do			// prints 10 then empty
-		println(a.b)
+		i = 2,147,483,647
+		i ++ catch e: OverFlowException do
+			println("overflow: ", i)				// prints overflow: -2,147,483,648
+		end catch
+
+		// similarly, assigning a value which is too high/low will cause the same result
+		i = 2,147,483,648
+		println(i)				// prints -2,147,483,648
+
+		i = 2,147,483,648 catch e: OverFlowException do
+			println("overflow: ", i)				// prints overflow: -2,147,483,648
+		end catch
+
+	end func
+
+	// loop statement
+	for i = 0, i <= 4, i++  do
+		println(i)
 	end for
 
-	for a: Animal in l do	// prints 10
-		println(get a.b)
+	for i in list do
+		println(i)
 	end for
 
-	for get a.Animal in l do	// prints 10 then 5, get classObject.ClassName always return classObject if classObject: ClassName
-		println(get a.b)
-	end for
+	while true do
+		println("hi there!")
+	end while
 
-	for a: Dog in l do
-		println(get a.b)		// prints 5
-	end for
+	// until loops have 2 kinds, until <boolean expression> and until <event>
+	i = 0
+	until i == 10 do	// boolean expression type of until loop
+		print(i)
+		i ++
+	end until
 
-
-
-	// control flow
-	if get cat.b == 10 then
-		println("cat is 10")
-	else if get cat.b == 5 then
-		println("cat is 5")
-	else
-		println("who knows!??!?")
-	end if
-
-
-
-	// emptiness
-	// empty == empty
-	// empty.x == empty
-	// empty.x() == empty
+	func example() do
+		// creating and accessing an object
+		cat = Animal(10)
+		cat.c				// returns "hi"
+		cat.x				// error
+		cat.c = "bye"		// sets cat.c from "hi" to "bye"
+		cat.x = 4			// error
+		cat.makenoise()		// prints "meow!"
 
 
 
-	// synchronising variables, if waits until cat and cat.b are free
-	if wobbly get cat.b == 10 then
-		println("cool")
-	end if
+		// lists are NOT fixed type or size
+		l = [cat, Dog(5)]
+
+		for a in l do			// prints 10 then void
+			println(a.b)
+		end for
+
+		for a: Animal in l do	// prints 10
+			println(a.b)
+		end for
+
+		for a.Animal in l do	// prints 10 then 5, get classObject.ClassName always return classObject if classObject: ClassName
+			println(a.b)
+		end for
+
+		for a: Dog in l do
+			println(a.b)		// prints 5
+		end for
 
 
 
-	// a-synchronous loop
-	wibbly for get a.Animal in l do
-		println(get a.b)	// prints 10 and 5 in undefined order
-	end for
+		// control flow
+		if cat.b == 10 do
+			println("cat is 10")
+		else if cat.b == 5 do
+			println("cat is 5")
+		else do
+			println("who knows!??!?")
+		end if
 
 
 
-	// a-synchronous loop which only runs once list is not in use
-	wibbly for wobbly get a.Animal in l do
-		println(get a.b)	// prints 10 and 5 in undefine order as soon as l and a and a.Animal are free
-	end for
-end func
 
-func main() do
-	a = 3
-	b: int = 4
-	c: big int = 5
-end func
+		// voidness
+		// void == void
+		// void.x == void
+		// void.x() == void
+
+
+
+		// blocks
+		// code can be grouped into blocks, giving a new scope
+		do
+			ans = 42
+			println(ans)	// prints 42
+		end
+		println(ans)		// prints void
+
+
+
+		// synchronising variables, if waits until cat and cat.b are free
+		if cat.b == 10 do
+			println("cool")
+		end if
+
+		// a-synchronous loop
+		wibbly for a.Animal in l do
+			println(a.b)	// prints 10 and 5 in undefined order
+		end for
+
+		// a-synchronous loop which only runs once list is not in use
+		wibbly for a.Animal in l do
+			println(a.b)	// prints 10 and 5 in undefine order as soon as l and a and a.Animal are free
+		end for
+
+		// a then clause can be attached to a statement
+		// the then clauses will be executed immediately after preceding statement has returned
+		// e.g. trivial example, x is set to "foo" then y is set to the value of x, "foo"
+		x = "foo" then
+		y = x
+
+		// a-synchronous function call and callback example
+		func foo() do
+			return 10
+		end func
+
+		func bar(a) do
+			return a * 2
+		end func
+
+		a = wibbly foo() then				// call foo a-synchronously and don't continue to next statement until foo returns
+		b = wibbly bar(a) then				// call bar a-synchronously and don't continue to next statement until bar returns
+		println(a)							// prints 10
+		println(b)							// prints void or 20 (could be called before/after foo and bar finish execution)
+
+		// example where the println(b) always prints 20
+		a = wibbly foo() then
+		b = wibbly bar(a) then
+		println(a) then
+		println(b)
+
+		// using do block
+		a = wibbly foo() then
+		b = wibbly bar(a) then do
+			println(a)
+			println(b)
+		end	then						// can't end with then since it will create a new then clause (maybe I could if I don't put an end until final then ends)
+
+		// waiting for the outcome of multiple function calls to be resolved
+		when wibbly foo(), wibbly bar(0) do
+			println('all calls resolved')
+		end when
+
+		// alternative when there is not a fixed no. of calls to resolve etc.
+		when
+			wibbly for fnc in somelist do
+				wibbly foo(ack)
+			end for
+		do
+			println('all calls resolved')
+		end when
+
+		// wibbly statement based until loop
+		until wibbly foo() do
+			println('foo still not returned')
+		end until
+
+		// etc, etc....
+		until wibbly foo(), wibbly bar() do
+			println('still waiting for resolution')
+		end until
+
+
+
+		// attach listeners to events
+		// in an imaginary gui
+		class Page() do
+			get pageclicked: event
+
+			func foo() do
+				println("foo")
+				pageclicked()
+				println("ack")
+			end func
+		end class
+
+		p = Page()
+
+		when p.pageclicked do
+			println("page clicked!")
+		end when
+
+		p.foo()		// prints "foo" then "page clicked!" then "ack"
+
+		// event based until loop
+		until p.pageclicked do
+			println('still waiting')	// should probably put a wait after this line
+		end until
+
+
+
+
+		// store data in an object with anonymous type
+		JSONData = object do
+			a = 4
+			b = 'value'
+			c = object do
+				d = 7
+			end object
+		end object
+
+		//translates to following JSON object
+		///
+			JSONData = {
+				a: 4,
+				b: 'value',
+				c: {
+					d: 7
+				}
+			}
+		///
+
+		// serialise from object to class object
+		class JSONDataClass() do
+			a: int
+			b: string
+			c: SubClass
+
+			class SubClass() do
+				d: int
+			end class
+		end class
+
+		JSONData = object do
+			a = 4
+			b = 'value'
+			c = object do
+				d = 7
+			end object
+		end object as JSONDataClass
+
+
+
+	end func
+
+	func main() do
+		a = 3
+		b: int = 4
+		c: big int = 5
+	end func
+end class

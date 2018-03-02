@@ -1,0 +1,146 @@
+program_file ->
+	global_statements
+	
+global_statements ->
+	nothing
+	| global_statement
+	| global_statement, global_statements
+	
+global_statement ->
+	import_statement
+	| class_definition
+	| module_definition
+	
+import_statement ->
+	'import' STRING_LITERAL
+	
+class_statement ->
+	'class' IDENTIFIER parameter_list block 'class'
+	
+parameter_list ->					// e.g.  (a, b) 	(a: int, b: string = 'ack') (x = 0, y)
+	'(' simple_variable_declerations ')'
+
+complex_identifier ->
+	IDENTIFIER
+	| IDENTIFIER '.' complex_identifier
+
+simple_variable_declerations ->
+	nothing
+	| simple_variable_decleration
+	| simple_variable_decleration ',' simple_variable_declerations
+
+simple_variable_decleration ->
+	IDENTIFIER
+	| IDENTIFIER type_decleration
+	| IDENTIFIER variable_assignment
+	| IDENTIFIER type_decleration variable_assignment
+
+complex_variable_decleration ->
+	'var' complex_identifier
+	| 'var' complex_identifier type_decleration
+	| 'var' complex_identifier variable_assignment
+	| 'var' complex_identifier type_decleration variable_assignment
+
+type_decleration ->
+	':' variable_type
+
+variable_type ->
+	variable_modifier 'int'
+	| variable_modifier 'float'
+	| variable_modifier 'string'
+	| variable_modifier 'bool'
+	| variable_modifier 'event'
+	| IDENTIFIER
+
+variable_modifier ->
+	nothing
+	| 'big'
+
+variable_assignment ->
+	'=' expression
+	| '+=' expression
+	| '-=' expression
+	| '*=' expression
+	| '/=' expression
+	| '%=' expression
+	| '++'
+	| '--'
+
+block ->
+	'do', statements, 'end'
+
+statements ->
+	statement
+	| statement statements
+	
+statement ->
+	nothing
+	| function_decleration
+	| for_loop
+	| while_loop
+	| expression
+	
+function_decleration ->
+	'func' parameter_list block 'func'
+	| 'wibbly' 'func' parameter_list block 'func'
+	| 'func' complex_identifier parameter_list block 'func'
+	| 'wibbly' 'func' complex_identifier parameter_list block 'func'
+
+for_loop ->
+	'for' variable_declerations expression expression block 'for'
+	| 'wibbly' 'for' variable_declerations expression expression block 'for'
+	| 'for' complex_identifier 'in' complex_identifier block 'for'
+	| 'wibbly' 'for' complex_identifier 'in' complex_identifier block 'for'
+
+while_loop ->
+	'while' expression block 'while'
+	| 'wibbly' 'while' expression block 'while'
+
+//function_call ->
+//	complex_identifier argument_list
+//	| 'wibbly' complex_identifier argument_list
+	
+function_call_stub ->
+	argument_list
+
+argument_list ->
+	'(', expressions, ')'
+	| '(' ')'
+
+expressions ->
+	expression
+	| expression ',' expressions
+	
+expression ->
+	expression_leaf
+	| expression_leaf '+' expression
+	| expression_leaf '-' expression
+	| expression_leaf '*' expression
+	| expression_leaf '/' expression
+	| expression_leaf '%' expression
+	| expression_leaf '**' expression
+	| expression_leaf '%%' expression
+	| expression_leaf '==' expression
+	| expression_leaf '!=' expression
+	| expression_leaf '<' expression
+	| expression_leaf '>' expression
+	| expression_leaf '~==' expression
+	| expression_leaf '<=' expression
+	| expression_leaf '>=' expression
+	| expression_leaf '&&' expression
+	| expression_leaf '||' expression
+	
+expression_leaf ->
+	complex_identifier
+	| complex_identifier 'as' variable_type
+	| complex_identifier argument_list
+	| 'wibbly' complex_identifier argument_list
+	| complex_identifier argument_list 'as' variable_type
+	| 'wibbly' complex_identifier argument_list 'as' variable_type
+	| STRING_LITERAL
+	| NUMBER_LITERAL
+
+
+
+
+

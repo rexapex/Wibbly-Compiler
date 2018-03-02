@@ -1,0 +1,24 @@
+import 'another file'
+
+// what a class
+class Animal(b) do
+	// all member variables are private
+	var x: int = b
+
+	var y = 0.1
+
+	// all member functions are public
+	func foo() do
+		println("meow!")
+	end func
+end class
+
+class Main() do
+	func main() do
+		var a = Animal() as Ack
+		a.foo()
+		a = 0
+		tree += ackinator
+		wibbly a.foo() as ack
+	end func
+end class
